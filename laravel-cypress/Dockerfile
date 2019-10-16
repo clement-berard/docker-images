@@ -9,6 +9,7 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 # 1. development packages
 RUN apt-get install -y \
     git \
+    wget \
     zip \
     curl \
     sudo \
@@ -47,7 +48,9 @@ RUN docker-php-ext-install \
     pdo_mysql \
     zip \
     exif \
-    gd
+    gd \
+    pdo \
+    pdo_mysql
 
 # Node install
 ENV NODE_VERSION 10.13.0
@@ -62,5 +65,14 @@ RUN mkdir ${NVM_DIR} && \
 
 ENV NODE_PATH $NVM_DIR/versions/node/v$NODE_VERSION/lib/node_modules
 ENV PATH      $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+
+# Install Chrome for Selenium
+RUN curl https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o /chrome.deb
+RUN dpkg -i /chrome.deb || apt-get install -yf
+RUN rm /chrome.deb
+
+# Install chromedriver for Selenium
+RUN curl https://chromedriver.storage.googleapis.com/2.31/chromedriver_linux64.zip -o /usr/local/bin/chromedriver
+RUN chmod +x /usr/local/bin/chromedriver
 
 WORKDIR /var/www
