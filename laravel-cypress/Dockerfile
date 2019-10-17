@@ -25,7 +25,10 @@ RUN apt-get install -y \
     libgmp-dev \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
-    g++
+    g++ \
+    gnupg \
+    gnupg2 \
+    gnupg1
 
 # Cypress dependencies
 RUN apt update && \
@@ -66,13 +69,11 @@ RUN mkdir ${NVM_DIR} && \
 ENV NODE_PATH $NVM_DIR/versions/node/v$NODE_VERSION/lib/node_modules
 ENV PATH      $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
-# Install Chrome for Selenium
-RUN curl https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o /chrome.deb
-RUN dpkg -i /chrome.deb || apt-get install -yf
-RUN rm /chrome.deb
-
-# Install chromedriver for Selenium
-RUN curl https://chromedriver.storage.googleapis.com/2.31/chromedriver_linux64.zip -o /usr/local/bin/chromedriver
-RUN chmod +x /usr/local/bin/chromedriver
+# Chrome install
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list && \
+    apt-get update && \
+    apt-get install -y dbus-x11 google-chrome-stable && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/www
