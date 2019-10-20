@@ -1,6 +1,6 @@
 <h1 align="center">Docker-images 👋</h1>
 <p align="center">
-  <img src="./.doc/docker-logo.png" />
+  <img width="200" src="./.doc/docker-logo.png" />
 </p>
 
 
